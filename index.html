@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ThinkArena – Your Ultimate Gaming Destination</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+  <div id="overlay"></div>
+
+  <div class="completion-modal" id="completionModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <h3 id="completionTitle">🎉 Congratulations!</h3>
+    <p id="completionText">You finished the game in 00:00</p>
+    <div style="display:flex; justify-content:center; gap:12px;">
+      <button class="btn btn-primary" id="completionPlayAgain">Play Again</button>
+      <button class="btn btn-ghost" id="completionBackHome">Back to Home</button>
+    </div>
+  </div>
+
+  <div class="solution-panel" id="solutionPanel" aria-hidden="true">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h3 style="margin:0;color:#1a2d55">🔍 Solution</h3>
+      <button onclick="toggleSolution()" style="background:transparent;border:none;font-size:20px;cursor:pointer;">×</button>
+    </div>
+    <div class="solution-grid" id="solutionGrid"></div>
+    <p style="font-size:0.85rem;color:#3e4e68;margin-top:8px;text-align:center;">Complete solution for reference</p>
+  </div>
+
+  <button class="solution-toggle" id="solutionToggle" onclick="toggleSolution()" style="display:none">SOLUTION</button>
+
+  <div class="header" id="mainHeader">
+    <h1>🎮 ThinkArena</h1>
+    <p>Your Ultimate Gaming Destination</p>
+    <div id="welcomeWrapper" class="welcome-text" style="display:none;">Welcome, <span id="playerName">Player</span>!</div>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+  </div>
+
+  <div class="container" id="loginContainer">
+    <div class="login-panel" id="loginPanel">
+      <h2>Login / Register</h2>
+      <div class="form-row">
+        <label for="emailInput">Email</label>
+        <input id="emailInput" type="email" placeholder="you@example.com" />
+      </div>
+      <div class="form-row">
+        <label for="usernameInput">Username</label>
+        <input id="usernameInput" type="text" placeholder="Choose a username" />
+      </div>
+      <div style="display:flex;justify-content:flex-end;">
+        <button class="btn btn-primary" id="loginBtn">Continue</button>
+      </div>
+      <p class="small-muted" style="margin-top:12px;">Your username will be stored and shown on the home page.</p>
+    </div>
+  </div>
+
+  <div class="container" id="mainContainer" style="display:none;">
+    <div id="gameSelection" class="games-grid">
+      <div class="game-card" onclick="showGame('sudoku')">
+        <div class="game-icon">🧩</div>
+        <h3>Sudoku</h3>
+        <p>Challenge your mind with this classic number puzzle game</p>
+      </div>
+
+      <div class="game-card" onclick="showGame('memory')">
+        <div class="game-icon">🃏</div>
+        <h3>Memory Pairs</h3>
+        <p>Match 12 pairs in a 4×6 grid — find all pairs as fast as you can</p>
+      </div>
+
+      <div class="game-card" style="opacity:0.7;cursor:default;">
+        <div class="game-icon">🏆</div>
+        <h3>Coming Soon</h3>
+        <p>More games coming soon!</p>
+      </div>
+    </div>
+
+    <button class="back-btn" id="backBtn" onclick="showGameSelection()" style="display:none;">← Back</button>
+
+    <div id="sudokuGame" class="game-container" style="display:none;">
+      
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+        <div>
+          <h2 style="margin:0;">🧩 Sudoku Master</h2>
+          <div style="margin-top:6px;">
+            <button class="difficulty-btn easy" onclick="setDifficulty('easy')">Easy</button>
+            <button class="difficulty-btn medium active" onclick="setDifficulty('medium')">Medium</button>
+            <button class="difficulty-btn hard" onclick="setDifficulty('hard')">Hard</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn btn-primary" onclick="newGame()">New Game</button>
+          <button class="btn btn-secondary" onclick="clearBoard()">Clear</button>
+          <button class="btn btn-success" onclick="validateSolution()">Validate</button>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:center;margin-top:12px;">
+        <div class="sudoku-board"><div class="sudoku-grid" id="sudokuGrid"></div></div>
+      </div>
+
+      <div id="validationResult" class="validation-result" style="margin-top:12px;"></div>
+
+      <div class="status-bar">
+        <div class="status-item"><h4>Timer</h4><span id="timer">00:00</span></div>
+        <div class="status-item"><h4>Moves</h4><span id="moves">0</span></div>
+        <div class="status-item"><h4>Difficulty</h4><span id="difficulty">Medium</span></div>
+      </div>
+    </div>
+
+    <div id="memoryGame" class="game-container" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+        <div>
+          <h2>🃏 Memory Pairs (4×6)</h2>
+          <p style="color:#3e4e68;">Flip cards and match pairs — timer starts on your first flip!</p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn btn-primary" onclick="startNewMemory()">New Game</button>
+          <button class="btn btn-secondary" onclick="shuffleMemory()">Shuffle</button>
+          <button class="btn btn-success" onclick="showMemorySolution()">Show Solution</button>
+        </div>
+      </div>
+      <div class="memory-board" id="memoryBoard"></div>
+
+      <div class="status-bar">
+        <div class="status-item"><h4>Timer</h4><span id="memoryTimer">00:00</span></div>
+        <div class="status-item"><h4>Moves</h4><span id="memoryMoves">0</span></div>
+        <div class="status-item"><h4>Matches</h4><span id="memoryMatches">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
